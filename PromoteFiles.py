@@ -7,7 +7,6 @@ from watchdog.utils.dirsnapshot import DirectorySnapshotDiff
 if __name__ == "__main__":
 
 	path = sys.argv[1] if len(sys.argv) > 1 else '.'
-
 	ref = DirectorySnapshot(path, recursive=True)
 
 	try:
