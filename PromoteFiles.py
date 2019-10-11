@@ -25,7 +25,13 @@ if __name__ == "__main__":
 				# Case when no promotable changes have been made
 				if (len(diff.files_created) == 0 and len(diff.files_modified) == 0):
 					print("No promotable changes have been made since the last promotion.")
+
+				# I feel like I shouldn't need to do this...
+				elif ("./snapshot.dat" in diff.files_modified):
+					print("handle this case!")
+
 				else:
+					#print(diff.files_modified)
 					# Created files
 					for file in diff.files_created:
 						if (file.endswith(".txt")):
@@ -37,8 +43,6 @@ if __name__ == "__main__":
 					for file in diff.files_modified:	# add case for when file name is ./snapshot.txt
 						if (file.endswith(".txt")):
 							print(file + " has been modified.")
-						elif (os.path.split("./snapshot.dat")):
-							print("handle yo input, boi...")
 						else:
 							print("A new file has been modified in this directory, but this change is not promotable because only .txt files are supported by this application.")
 
