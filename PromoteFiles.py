@@ -1,6 +1,8 @@
+# NOTE:  the serialization still does not work...
 import sys
 import time
 import os
+import dill	# pickle does not support lambda functions
 from watchdog.utils.dirsnapshot import DirectorySnapshot
 from watchdog.utils.dirsnapshot import DirectorySnapshotDiff
 
@@ -9,11 +11,16 @@ if __name__ == "__main__":
 	path = '.'
 
 	# Note:  does os.path work on Windows?
-	if not os.path.exists('./snapshot.dat'):
-		with open('./snapshot.dat', 'a'): pass			# do I have to close this?
-
-	# Take a snapshot
-	snapshot = DirectorySnapshot(path, recursive=True)
+	if not os.path.exists('./snapshot.pkl'):		
+		with open('./snapshot.pkl', 'w') as file: pass
+		snapshot = DirectorySnapshot(path, recursive = True)
+		file = open('./snapshot.pkl', 'wb')
+		dill.dump(snapshot, file)
+		file.close()
+	else:
+		with open('./snapshot.pkl', 'rb') as file:
+			snapshot = dill.load(file)
+			file.close()
 
 	try:
 		while True:
@@ -22,11 +29,11 @@ if __name__ == "__main__":
 			if (userInput == "promote"):
 
 				# Get the current image and compare with snapshot
-				current = DirectorySnapshot(path, recursive=True)
+				current = DirectorySnapshot(path, recursive = True)
 				diff = DirectorySnapshotDiff(snapshot, current)
 
 				# Case when promotable items are available
-				if ((len(diff.files_created) > 0 or len(diff.files_modified) > 0) and not (len(diff.files_modified) == 1 and "./snapshot.dat" in diff.files_modified)):
+				if ((len(diff.files_created) > 0 or len(diff.files_modified) > 0) and not (len(diff.files_modified) == 1 and "./snapshot.pkl" in diff.files_modified)):	# this logic is still fucky
 
 					# Created files
 					for file in diff.files_created:
@@ -45,13 +52,18 @@ if __name__ == "__main__":
 					snapshot = current
 
 					# Save snapshot to file
-					file = open('./snapshot.dat', 'w')
-					file.write(str(snapshot))
-					file.close()
+					#file = open('./snapshot.pkl', 'w')
+					#file.write(str(snapshot))
+					#file.close()
 
 				else:
 					print("No promotable changes have been made since the last promotion.")
 
 	except KeyboardInterrupt:
+		# Save snapshot to file
+		file = open('./snapshot.pkl', 'w')
+		file.write(str(snapshot))
+		file.close()
+
 		snapshot.stop()
 	snapshot.join()
