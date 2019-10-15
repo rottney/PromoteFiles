@@ -8,12 +8,10 @@ from watchdog.utils.dirsnapshot import DirectorySnapshotDiff
 
 if __name__ == "__main__":
 
-	path = '.'
-
 	# Note:  does os.path work on Windows?
 	if not os.path.exists('./snapshot.pkl'):		
 		with open('./snapshot.pkl', 'w') as file: pass
-		snapshot = DirectorySnapshot(path, recursive = True)
+		snapshot = DirectorySnapshot('.', recursive = True)
 		file = open('./snapshot.pkl', 'wb')
 		dill.dump(snapshot, file)
 		file.close()
@@ -29,7 +27,7 @@ if __name__ == "__main__":
 			if (userInput == "promote"):
 
 				# Get the current image and compare with snapshot
-				current = DirectorySnapshot(path, recursive = True)
+				current = DirectorySnapshot('.', recursive = True)
 				diff = DirectorySnapshotDiff(snapshot, current)
 
 				# Case when promotable items are available
