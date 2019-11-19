@@ -6,15 +6,7 @@ import re
 from watchdog.utils.dirsnapshot import DirectorySnapshot
 from watchdog.utils.dirsnapshot import DirectorySnapshotDiff
 
-def parseFileName(fileName):
-	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
-		print("Please use the input format:\n\tRuleType_###\nor consult the official documentation.")
-	else:
-		print(fileName + " is well-formatted.  Wow-zoo!!!")
-	
-
-if __name__ == "__main__":
-
+def run():
 	# Note:  does os.path work on Windows?
 	if not os.path.exists('./snapshot.pkl'):		
 		with open('./snapshot.pkl', 'w') as file: pass	# why is this w not wb
@@ -43,28 +35,27 @@ if __name__ == "__main__":
 					# Created files
 					for file in diff.files_created:
 						if (file.endswith(".txt")):
-							parseFileName(file)
-							print(file + " has been created.")
+							if (validateFormat(file)):
+								print(file + " has been created.")
+								#curl localhost:8080/home/add -d name="NAME" -d version=VERSION -d contents="CONTENTS"
 						elif (file.endswith(".pkl")):
 							print("just the diff [created], handle this")
 						elif (file.endswith(".py")):
 							print("this is the python file, handle this...")
 						else:
 							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
-							print("that file's name is " + file + " and I don't know why the freak it has been modified...")
 
 					# Modified files
 					for file in diff.files_modified:
 						if (file.endswith(".txt")):
-							parseFileName(file)
-							print(file + " has been modified.")
+							if (validateFormat(file)):
+								print(file + " has been modified.")
 						elif (file.endswith(".pkl")):
 							print("just the diff [modified], handle this")
 						elif (file.endswith(".py")):
 							print("this is the python file, handle this...")
 						else:
 							print("A new file has been modified in this directory, but this change is not promotable because only .txt files are supported by this application.")
-							print("that file's name is " + file + " and I don't know why the freak it has been modified...")
 
 					snapshot = current
 
@@ -74,10 +65,14 @@ if __name__ == "__main__":
 	except KeyboardInterrupt:
 		# Save snapshot to file
 		file = open('./snapshot.pkl', 'wb')
-		#file.write(str(snapshot))
 		dill.dump(snapshot, file)
 		file.close()
 
-		#snapshot.stop()	# Do I need this lol
+def validateFormat(fileName):
+	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
+		print("Please use the input format:\n\tRuleType_###\nor consult the official documentation.")
+		return False;
+	return True;
 
-	#snapshot.join()		# Do I need this lol
+if __name__ == "__main__":
+	run()
