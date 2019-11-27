@@ -3,6 +3,7 @@ import time
 import os
 import dill	# pickle does not support lambda functions
 import re
+import requests
 from watchdog.utils.dirsnapshot import DirectorySnapshot
 from watchdog.utils.dirsnapshot import DirectorySnapshotDiff
 
@@ -32,16 +33,19 @@ def run():
 				# Case when promotable items are available
 				if (len(diff.files_created) > 0 or len(diff.files_modified) > 0):
 
+					scriptOrSnapshotChanged = False
+
 					# Created files
 					for file in diff.files_created:
 						if (file.endswith(".txt")):
 							if (validateFormat(file)):
+								data = {'name': file, 'contents': file.read()}
+								response = requests.post('http://localhost:8080/home/add/', data=data)
+								print(response)
 								print(file + " has been created.")
-								#curl localhost:8080/home/add -d name="NAME" -d version=VERSION -d contents="CONTENTS"
-						elif (file.endswith(".pkl")):
-							print("just the diff [created], handle this")
-						elif (file.endswith(".py")):
-							print("this is the python file, handle this...")
+								#curl localhost:8080/home/add -d name=NAME --data-urlencode contents="CONTENTS"
+						elif (file.endswith("snapshot.pkl") or file.endswith("PromoteFiles.py")):
+							scriptOrSnapshotChanged = True
 						else:
 							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
 
@@ -49,13 +53,16 @@ def run():
 					for file in diff.files_modified:
 						if (file.endswith(".txt")):
 							if (validateFormat(file)):
+								data = {'name': file, 'contents': file.read()}
+								response = requests.post('http://localhost:8080/home/add/', data=data)
 								print(file + " has been modified.")
-						elif (file.endswith(".pkl")):
-							print("just the diff [modified], handle this")
-						elif (file.endswith(".py")):
-							print("this is the python file, handle this...")
+						elif (file.endswith("snapshot.pkl") or file.endswith("PromoteFiles.py")):
+							scriptOrSnapshotChanged = True
 						else:
-							print("A new file has been modified in this directory, but this change is not promotable because only .txt files are supported by this application.")
+							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
+
+					if (scriptOrSnapshotChanged):
+						print("No promotable changes have been made since the last promotion.")	
 
 					snapshot = current
 
@@ -67,6 +74,8 @@ def run():
 		file = open('./snapshot.pkl', 'wb')
 		dill.dump(snapshot, file)
 		file.close()
+
+		print("")
 
 def validateFormat(fileName):
 	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
