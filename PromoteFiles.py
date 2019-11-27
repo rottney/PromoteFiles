@@ -29,7 +29,7 @@ def run():
 				current = DirectorySnapshot('.', recursive = True)
 				diff = DirectorySnapshotDiff(snapshot, current)
 
-				if (len(diff.files_created) > 0 or len(diff.files_modified) > 0):
+				if ((len(diff.files_created) > 0 or len(diff.files_modified) > 0)):
 
 					global scriptOrSnapshotChanged
 					scriptOrSnapshotChanged = False
@@ -41,13 +41,11 @@ def run():
 						analyzeDiff(fileName, "modified")
 
 					if (scriptOrSnapshotChanged):
-						print("flagger?")
-						print("No promotable changes have been made since the last promotion.")	
+						print("Utility files have changed on disk, but these changes are not promotable.")
 
 					snapshot = current
 
 				else:
-					print("elser...")
 					print("No promotable changes have been made since the last promotion.")
 
 	except KeyboardInterrupt:
