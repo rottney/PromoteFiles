@@ -64,8 +64,8 @@ def analyzeDiff(fileName, changeType):
 				contents = file.read()
 			file.close()
 			data = {'name': fileName.replace("./", ""), 'contents': contents}
-			requests.post('http://localhost:8080/home/add/', data=data)
-			print(fileName.replace("./", "") + " has been " + changeType + ".")
+			r = requests.post('http://localhost:8080/home/add/', data=data)
+			print(r.text)
 	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 		global scriptOrSnapshotChanged
 		scriptOrSnapshotChanged = True
