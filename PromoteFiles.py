@@ -1,7 +1,7 @@
 import sys
 import time
 import os
-import dill	# pickle does not support lambda functions
+import dill
 import re
 import requests
 from watchdog.utils.dirsnapshot import DirectorySnapshot
@@ -26,53 +26,28 @@ def run():
 			userInput = input()
 			if (userInput == "promote"):
 
-				# Get the current image and compare with snapshot
 				current = DirectorySnapshot('.', recursive = True)
 				diff = DirectorySnapshotDiff(snapshot, current)
 
-				# Case when promotable items are available
 				if (len(diff.files_created) > 0 or len(diff.files_modified) > 0):
 
+					global scriptOrSnapshotChanged
 					scriptOrSnapshotChanged = False
 
-					# Created files
 					for fileName in diff.files_created:
-						if (fileName.endswith(".txt")):
-							if (validateFormat(fileName)):
-								file = open("./" + fileName, "r")
-								if file.mode == 'r':
-									contents = file.read()
-								file.close()
-								data = {'name': fileName.replace("./", ""), 'contents': contents}	# FIXME?
-								response = requests.post('http://localhost:8080/home/add/', data=data)
-								print(fileName + " has been created.")
-						elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
-							scriptOrSnapshotChanged = True
-						else:
-							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
+						analyzeDiff(fileName, "created")
 
-					# Modified files
 					for fileName in diff.files_modified:
-						if (fileName.endswith(".txt")):
-							if (validateFormat(fileName)):
-								file = open("./" + fileName, "r")
-								if file.mode == 'r':
-									contents = file.read()
-								file.close()
-								data = {'name': fileName.replace("./", ""), 'contents': contents}	# FIXME?
-								response = requests.post('http://localhost:8080/home/add/', data=data)
-								print(fileName + " has been modified.")
-						elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
-							scriptOrSnapshotChanged = True
-						else:
-							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
+						analyzeDiff(fileName, "modified")
 
 					if (scriptOrSnapshotChanged):
+						print("flagger?")
 						print("No promotable changes have been made since the last promotion.")	
 
 					snapshot = current
 
 				else:
+					print("elser...")
 					print("No promotable changes have been made since the last promotion.")
 
 	except KeyboardInterrupt:
@@ -82,6 +57,23 @@ def run():
 		file.close()
 
 		print("")
+
+def analyzeDiff(fileName, changeType):
+	if (fileName.endswith(".txt")):
+		if (validateFormat(fileName)):
+			file = open("./" + fileName, "r")
+			if file.mode == 'r':
+				contents = file.read()
+			file.close()
+			data = {'name': fileName.replace("./", ""), 'contents': contents}
+			response = requests.post('http://localhost:8080/home/add/', data=data)
+			print(fileName + " has been created.")
+	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
+		global scriptOrSnapshotChanged
+		scriptOrSnapshotChanged = True
+	else:
+		print("A new file has been " + changeType + " in this directory, " + 
+			"but this change is not promotable because only .txt files are supported by this application.")
 
 def validateFormat(fileName):
 	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
