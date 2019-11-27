@@ -46,7 +46,7 @@ def run():
 					snapshot = current
 
 				else:
-					print("No promotable changes have been made since the last promotion.")
+					print("No promotable changes have been made in this directory since the last promotion.")
 
 	except KeyboardInterrupt:
 		# Save snapshot to file
@@ -65,7 +65,8 @@ def analyzeDiff(fileName, changeType):
 			file.close()
 			data = {'name': fileName.replace("./", ""), 'contents': contents}
 			response = requests.post('http://localhost:8080/home/add/', data=data)
-			print(fileName + " has been created.")
+			print(response)
+			print(fileName.replace("./", "") + " has been " + changeType + ".")
 	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 		global scriptOrSnapshotChanged
 		scriptOrSnapshotChanged = True
