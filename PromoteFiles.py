@@ -36,27 +36,33 @@ def run():
 					scriptOrSnapshotChanged = False
 
 					# Created files
-					for file in diff.files_created:
-						if (file.endswith(".txt")):
-							if (validateFormat(file)):
-								data = {'name': file, 'contents': file.read()}
+					for fileName in diff.files_created:
+						if (fileName.endswith(".txt")):
+							if (validateFormat(fileName)):
+								file = open("./" + fileName, "r")
+								if file.mode == 'r':
+									contents = file.read()
+								file.close()
+								data = {'name': fileName.replace("./", ""), 'contents': contents}	# FIXME?
 								response = requests.post('http://localhost:8080/home/add/', data=data)
-								print(response)
-								print(file + " has been created.")
-								#curl localhost:8080/home/add -d name=NAME --data-urlencode contents="CONTENTS"
-						elif (file.endswith("snapshot.pkl") or file.endswith("PromoteFiles.py")):
+								print(fileName + " has been created.")
+						elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 							scriptOrSnapshotChanged = True
 						else:
 							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
 
 					# Modified files
-					for file in diff.files_modified:
-						if (file.endswith(".txt")):
-							if (validateFormat(file)):
-								data = {'name': file, 'contents': file.read()}
+					for fileName in diff.files_modified:
+						if (fileName.endswith(".txt")):
+							if (validateFormat(fileName)):
+								file = open("./" + fileName, "r")
+								if file.mode == 'r':
+									contents = file.read()
+								file.close()
+								data = {'name': fileName.replace("./", ""), 'contents': contents}	# FIXME?
 								response = requests.post('http://localhost:8080/home/add/', data=data)
-								print(file + " has been modified.")
-						elif (file.endswith("snapshot.pkl") or file.endswith("PromoteFiles.py")):
+								print(fileName + " has been modified.")
+						elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 							scriptOrSnapshotChanged = True
 						else:
 							print("A new file has been created in this directory, but this change is not promotable because only .txt files are supported by this application.")
