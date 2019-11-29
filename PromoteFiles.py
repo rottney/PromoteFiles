@@ -44,12 +44,14 @@ def run():
 						analyzeDiff(fileName, "modified")
 
 					if (scriptOrSnapshotChanged):
-						print("Utility files have changed on disk, but these changes are not promotable.")
+						print("Utility files have changed on disk, " + 
+							"but these changes are not promotable.")
 
 					snapshot = current
 
 				else:
-					print("No promotable changes have been made in this directory since the last promotion.")
+					print("No promotable changes have been made " + 
+						"in this directory since the last promotion.")
 
 			if (userInput == "help"):
 				help()
@@ -91,12 +93,14 @@ def analyzeDiff(fileName, changeType):
 
 	else:
 		print("A new file has been " + changeType + " in this directory, " + 
-			"but this change is not promotable because only .txt files are supported " + 
-			"by this application, or because the file in question has been deleted.")
+			"but this change is not promotable because only .txt files " + 
+			"are supported by this application, or because " + 
+			"the file in question has been deleted.")
 
 def validateFormat(fileName):
 	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
-		print("Please use the input format:\nRuleType_###\nor consult the official documentation.")
+		print("Please use the input format:\nRuleType_###\n" + 
+			"or consult the official documentation.")
 		return False;
 
 	return True;
@@ -114,21 +118,23 @@ def routeFile(fileName):
 		print("Route to Server 3.")
 
 	else:
-		print("Your CustomerID is out of range.  We only support values between 0 and 1499.")
+		print("Your CustomerID is out of range.  " + 
+			"We only support values between 0 and 1499.")
 
 def sendRequest(domain, data):
 	try:
 		r = requests.post(domain + "/home/add/", data=data)
 		print(r.text)
 	except ConnectionError:
-		print("The server is off!  Please contact the maintainer at github.com/rottney.\n" + 
-			"Please re-save the file " + data.get("name").replace("./", "") + 
-			" before your next promotion attempt.")
+		print("The server is off!  Please contact the maintainer at " + 
+			"github.com/rottney.\nPlease re-save the file " + data.get("name")
+			.replace("./", "") + " before your next promotion attempt.")
 
 def help():
-	print("\nUsage: type 'promote', and all promotable files within your local directory:\n" + 
-		os.path.abspath("./") + "\nwill be promoted to the appropriate servers.\n" + 
-		"Type 'exit' or CTRL + 'C' to exit this program.\nType 'help' to repeat this information.\n")
+	print("\nUsage: type 'promote', and all promotable files within your " + 
+		"local directory:\n" + os.path.abspath("./") + "\nwill be promoted to " + 
+		"the appropriate servers.\nType 'exit' or CTRL + 'C' to exit this program." + 
+		"\nType 'help' to repeat this information.\n")
 
 if __name__ == "__main__":
 	run()
