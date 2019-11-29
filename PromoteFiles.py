@@ -83,18 +83,13 @@ def analyzeDiff(fileName, changeType):
 
 			data = {'name': fileName.replace("./", ""), 'contents': contents}
 			routeFile(fileName)
-
-			try:
-				r = requests.post('http://localhost:8080/home/add/', data=data)
-				print(r.text)
-			except ConnectionError:
-				print("The server is off!  Please contact the maintainer at github.com/rottney.")
+			sendRequest("http://localhost:8080", data)
 
 	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 		global scriptOrSnapshotChanged
 		scriptOrSnapshotChanged = True
 
-	else:
+	else:(fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 		print("A new file has been " + changeType + " in this directory, " + 
 			"but this change is not promotable because only .txt files are supported by this application, " +
 			"or because the file in question has been deleted.")
@@ -120,6 +115,13 @@ def routeFile(fileName):
 
 	else:
 		print("Your CustomerID is out of range.  We only support values between 0 and 1499.")
+
+def sendRequest(domain, data):
+	try:
+		r = requests.post(domain + "/home/add/", data=data)
+		print(r.text)
+	except ConnectionError:
+		print("The server is off!  Please contact the maintainer at github.com/rottney.")
 
 def help():
 	print("\nUsage: type 'promote', and all promotable files within your local directory:\n" + 
