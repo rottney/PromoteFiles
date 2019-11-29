@@ -12,15 +12,15 @@ def run():
 	help()
 
 	# Note:  does os.path work on Windows?
-	if not os.path.exists('./snapshot.pkl'):		
-		with open('./snapshot.pkl', 'w') as file: pass	# why is this w not wb
-		snapshot = DirectorySnapshot('.', recursive = True)
-		file = open('./snapshot.pkl', 'wb')
+	if not os.path.exists("./snapshot.pkl"):		
+		with open("./snapshot.pkl", "w") as file: pass	# why is this w not wb
+		snapshot = DirectorySnapshot(".", recursive = True)
+		file = open("./snapshot.pkl", "wb")
 		dill.dump(snapshot, file)
 		file.close()
 
 	else:
-		with open('./snapshot.pkl', 'rb') as file:
+		with open("./snapshot.pkl", "rb") as file:
 			snapshot = dill.load(file)
 			file.close()
 
@@ -55,7 +55,7 @@ def run():
 				help()
 
 			if (userInput == "exit"):
-				file = open('./snapshot.pkl', 'wb')
+				file = open("./snapshot.pkl", "wb")
 				dill.dump(snapshot, file)
 				file.close()
 
@@ -64,7 +64,7 @@ def run():
 
 	except KeyboardInterrupt:
 		# Save snapshot to file
-		file = open('./snapshot.pkl', 'wb')
+		file = open("./snapshot.pkl", "wb")
 		dill.dump(snapshot, file)
 		file.close()
 
@@ -76,12 +76,12 @@ def analyzeDiff(fileName, changeType):
 		if (validateFormat(fileName)):
 			file = open("./" + fileName, "r")
 
-			if file.mode == 'r':
+			if file.mode == "r":
 				contents = file.read()
 
 			file.close()
 
-			data = {'name': fileName.replace("./", ""), 'contents': contents}
+			data = {"name": fileName.replace("./", ""), "contents": contents}
 			routeFile(fileName)
 			sendRequest("http://localhost:8080", data)
 
@@ -89,10 +89,10 @@ def analyzeDiff(fileName, changeType):
 		global scriptOrSnapshotChanged
 		scriptOrSnapshotChanged = True
 
-	else:(fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
+	else:
 		print("A new file has been " + changeType + " in this directory, " + 
-			"but this change is not promotable because only .txt files are supported by this application, " +
-			"or because the file in question has been deleted.")
+			"but this change is not promotable because only .txt files are supported " + 
+			"by this application, or because the file in question has been deleted.")
 
 def validateFormat(fileName):
 	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
@@ -121,7 +121,9 @@ def sendRequest(domain, data):
 		r = requests.post(domain + "/home/add/", data=data)
 		print(r.text)
 	except ConnectionError:
-		print("The server is off!  Please contact the maintainer at github.com/rottney.")
+		print("The server is off!  Please contact the maintainer at github.com/rottney.\n" + 
+			"Please re-save the file " + data.get("name").replace("./", "") + 
+			" before your next promotion attempt.")
 
 def help():
 	print("\nUsage: type 'promote', and all promotable files within your local directory:\n" + 
