@@ -133,8 +133,8 @@ def sendRequest(domain, data):
 def help():
 	print("\nUsage: type 'promote', and all promotable files within your " + 
 		"local directory:\n" + os.path.abspath("./") + "\nwill be promoted to " + 
-		"the appropriate servers.\nType 'exit' or CTRL + 'C' to exit this program." + 
-		"\nType 'help' to repeat this information.\n")
+		"the appropriate servers.\nType 'exit' or CTRL + 'C' to exit " + 
+		"this program.\nType 'help' to repeat this information.\n")
 
 if __name__ == "__main__":
 	run()
