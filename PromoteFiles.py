@@ -44,14 +44,14 @@ def run():
 						analyzeDiff(fileName, "modified")
 
 					if (scriptOrSnapshotChanged):
-						print("Utility files have changed on disk, " + 
-							"but these changes are not promotable.")
+						print("\nUtility files have changed on disk, " + 
+							"but these changes are not promotable.\n")
 
 					snapshot = current
 
 				else:
-					print("No promotable changes have been made " + 
-						"in this directory since the last promotion.")
+					print("\nNo promotable changes have been made " + 
+						"in this directory since the last promotion.\n")
 
 			if (userInput == "help"):
 				help()
@@ -85,22 +85,24 @@ def analyzeDiff(fileName, changeType):
 
 			data = {"name": fileName.replace("./", ""), "contents": contents}
 			routeFile(fileName)
-			sendRequest("http://localhost:8080", data)
+			sendRequest("http://localhost:8080", data)		# this one works lol
+			#sendRequest("http://192.168.99.1:8080", data)	# this one doesn't work lol
+			#sendRequest("http://142.79.217.180:8080", data)
 
 	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 		global scriptOrSnapshotChanged
 		scriptOrSnapshotChanged = True
 
 	else:
-		print("A new file has been " + changeType + " in this directory, " + 
+		print("\nA new file has been " + changeType + " in this directory, " + 
 			"but this change is not promotable because only .txt files " + 
 			"are supported by this application, or because " + 
-			"the file in question has been deleted.")
+			"the file in question has been deleted.\n")
 
 def validateFormat(fileName):
 	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
-		print("Please use the input format:\nRuleType_###\n" + 
-			"or consult the official documentation.")
+		print("\nPlease use the input format:\nRuleType_###\n" + 
+			"or consult the official documentation.\n")
 		return False;
 
 	return True;
@@ -118,17 +120,17 @@ def routeFile(fileName):
 		print("Route to Server 3.")
 
 	else:
-		print("Your CustomerID is out of range.  " + 
-			"We only support values between 0 and 1499.")
+		print("\nYour CustomerID is out of range.  " + 
+			"We only support values between 0 and 1499.\n")
 
 def sendRequest(domain, data):
 	try:
 		r = requests.post(domain + "/home/add/", data=data)
 		print(r.text)
 	except ConnectionError:
-		print("The server is off!  Please contact the maintainer at " + 
+		print("\nThe server is off!  Please contact the maintainer at " + 
 			"github.com/rottney.\nPlease re-save the file " + data.get("name")
-			.replace("./", "") + " before your next promotion attempt.")
+			.replace("./", "") + " before your next promotion attempt.\n")
 
 def help():
 	print("\nUsage: type 'promote', and all promotable files within your " + 
