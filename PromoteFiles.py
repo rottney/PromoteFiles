@@ -44,13 +44,13 @@ def run():
 						analyzeDiff(fileName, "modified")
 
 					if (scriptOrSnapshotChanged):
-						print("\nUtility files have changed on disk, " + 
+						print("Utility files have changed on disk, " + 
 							"but these changes are not promotable.\n")
 
 					snapshot = current
 
 				else:
-					print("\nNo promotable changes have been made " + 
+					print("No promotable changes have been made " + 
 						"in this directory since the last promotion.\n")
 
 			if (userInput == "help"):
@@ -75,62 +75,66 @@ def run():
 def analyzeDiff(fileName, changeType):
 	if (fileName.endswith(".txt")):
 
-		if (validateFormat(fileName)):
+		if (validateFormat(fileName) and validateCustomerId(fileName)):
 			file = open("./" + fileName, "r")
 
-			if file.mode == "r":
-				contents = file.read()
+			'''if file.mode == "r":
+				contents = file.read()'''
+			contents = file.read()
 
 			file.close()
 
 			data = {"name": fileName.replace("./", ""), "contents": contents}
-			routeFile(fileName)
-			sendRequest("http://localhost:8080", data)		# this one works lol
-			#sendRequest("http://192.168.99.1:8080", data)	# this one doesn't work lol
-			#sendRequest("http://142.79.217.180:8080", data)
+			routeFile(fileName, data)
 
 	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
 		global scriptOrSnapshotChanged
 		scriptOrSnapshotChanged = True
 
 	else:
-		print("\nA new file has been " + changeType + " in this directory, " + 
+		print("A new file has been " + changeType + " in this directory, " + 
 			"but this change is not promotable because only .txt files " + 
 			"are supported by this application, or because " + 
 			"the file in question has been deleted.\n")
 
 def validateFormat(fileName):
 	if not (re.search("([A-Z][a-z]*)*[_][0-9]+", fileName)):
-		print("\nPlease use the input format:\nRuleType_###\n" + 
-			"or consult the official documentation.\n")
-		return False;
+		print(fileName + " is not a valid file name.\n" + 
+			"Please use the input format:\nRuleType_###\n" + 
+			"or consult the official documentation.")
+		return False
+	return True
 
-	return True;
+def validateCustomerId(fileName):
+	if not (int(fileName.split("_")[1].split(".txt")[0]) in range(0, 1500)):
+		print("Your CustomerID is out of range.  " + 
+			"We only support values between 0 and 1499.\n")
+		return False
+	return True
 
-def routeFile(fileName):
+def routeFile(fileName, data):
 	customerID = int(fileName.split("_")[1].split(".txt")[0])
 
 	if (0 <= customerID and customerID <= 499):
-		print("Route to Server 1.")
+		sendRequest("http://cluster1.3dpqdi6p3x.us-west-2.elasticbeanstalk.com", data)
 
-	elif (500 <= customerID and customerID <= 1001):
-		print("Route to Server 2.")
+	elif (500 <= customerID and customerID <= 999):
+		sendRequest("http://cluster2.3dpqdi6p3x.us-west-2.elasticbeanstalk.com", data)
 
 	elif (1000 <= customerID and customerID <= 1499):
-		print("Route to Server 3.")
-
+		sendRequest("http://cluster3.3dpqdi6p3x.us-west-2.elasticbeanstalk.com", data)
 	else:
-		print("\nYour CustomerID is out of range.  " + 
-			"We only support values between 0 and 1499.\n")
+		print("Your customer ID is invalid.")
+
 
 def sendRequest(domain, data):
 	try:
 		r = requests.post(domain + "/home/add/", data=data)
 		print(r.text)
 	except ConnectionError:
-		print("\nThe server is off!  Please contact the maintainer at " + 
+		print("The server is off!  Please contact the maintainer at " + 
 			"github.com/rottney.\nPlease re-save the file " + data.get("name")
-			.replace("./", "") + " before your next promotion attempt.\n")
+			.replace("./", "") + " before your next promotion attempt.")
 
 def help():
 	print("\nUsage: type 'promote', and all promotable files within your " + 
