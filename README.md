@@ -1,5 +1,5 @@
 # PromoteFiles
-CLI app to promote text files to a remote server
+CLI app to promote text files to a [remote server](https://github.com/rottney/RuleSheetServer)
 
 
 **SUMMARY:**
