@@ -10,7 +10,7 @@ When closed, this application stores a directory snapshot so that any changes in
 
 **INSTALLATION:**
 Clone [this repo](https://github.com/rottney/PromoteFiles.git) into a directory of your choice.
-If not already installed, please install the following using your favorite package manager:
+If not already installed, please install the following using your favorite Python package manager:
 * python3
 * dill
 * requests
