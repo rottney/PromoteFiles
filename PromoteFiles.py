@@ -11,9 +11,8 @@ from requests.exceptions import ConnectionError
 def run():
 	help()
 
-	# Note:  does os.path work on Windows?
 	if not os.path.exists("./snapshot.pkl"):		
-		with open("./snapshot.pkl", "w") as file: pass	# why is this w not wb
+		with open("./snapshot.pkl", "w") as file: pass
 		snapshot = DirectorySnapshot(".", recursive = True)
 		file = open("./snapshot.pkl", "wb")
 		dill.dump(snapshot, file)
@@ -78,13 +77,14 @@ def analyzeDiff(fileName, changeType):
 		if (validateFormat(fileName) and validateCustomerId(fileName)):
 			file = open("./" + fileName, "r")
 
-			'''if file.mode == "r":
-				contents = file.read()'''
 			contents = file.read()
 
 			file.close()
 
-			data = {"name": fileName.replace("./", ""), "contents": contents}
+			data = {
+				"name": fileName.replace("./", "").replace(".\\", ""),
+				"contents": contents
+			}
 			routeFile(fileName, data)
 
 	elif (fileName.endswith("snapshot.pkl") or fileName.endswith("PromoteFiles.py")):
