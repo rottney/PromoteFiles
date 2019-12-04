@@ -33,6 +33,7 @@ where RuleType is one of the following:
 1. ExpenseRouting
 2. Compliance
 3. SubmitCompliance
+
 and CustomerID is an integer between 0 and 1499, inclusive.
 
 The files may contain any text.  Emojis will be removed from the files' contents before they are stored on the servers.
