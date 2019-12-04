@@ -35,6 +35,7 @@ where RuleType is one of the following:
 3. SubmitCompliance
 
 and CustomerID is an integer between 0 and 1499, inclusive.
+These files must be in the same directory as the script PromoteFiles.py, or any child directory therein.
 
 The files may contain any text.  Emojis will be removed from the files' contents before they are stored on the servers.
 
