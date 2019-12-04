@@ -76,9 +76,7 @@ def analyzeDiff(fileName, changeType):
 
 		if (validateFormat(fileName) and validateCustomerId(fileName)):
 			file = open("./" + fileName, "r")
-
 			contents = file.read()
-
 			file.close()
 
 			data = {
