@@ -35,8 +35,13 @@ where RuleType is one of the following:
 3. SubmitCompliance
 and CustomerID is an integer between 0 and 1499, inclusive.
 
+The files may contain any text.  Emojis will be removed from the files' contents before they are stored on the servers.
+
 If CustomerID is between 0 and 499 (incl.), the file will be routed to [cluster 1](http://cluster1.3dpqdi6p3x.us-west-2.elasticbeanstalk.com/home/view).
+
 If CustomerID is between 500 and 999 (incl.), the file will be routed to [cluster 2](http://cluster2.3dpqdi6p3x.us-west-2.elasticbeanstalk.com/home/view).
+
 If CustomerID is between 1000 and 1499 (incl.), the file will be routed to [cluster 3](http://cluster3.3dpqdi6p3x.us-west-2.elasticbeanstalk.com/home/view).
 
-Any "ineligible" files will be validated and a message stating why the file is ineligble will be printed to the command line.
+Any eligible files will be promoted and a success message stating the file name and version number will be printed to the command line.  Please see the [server documentation] for details about versioning.  File promotions may be tested using the links provided above:  please note that only the 10 most recent entries on each server will be returned in the view.
+Any "ineligible" files will be validated and a message stating why the files are ineligble will be printed to the command line.
