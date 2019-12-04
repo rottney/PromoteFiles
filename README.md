@@ -27,7 +27,7 @@ Type `exit` or CTRL + `C` to terminate the program.
 **RULES:**
 "Eligible files" in this context are of the form
 
-<RuleType>_<CustomerID>.txt
+\<RuleType>\_\<CustomerID>\.txt
 
 where RuleType is one of the following:
 1. ExpenseRouting
