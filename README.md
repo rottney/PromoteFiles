@@ -45,3 +45,7 @@ The files will be routed to the appropriate servers based on CustomerID:
 
 Any eligible files will be promoted and a success message stating the file name and version number will be printed to the command line.  Please see the [server documentation](https://github.com/rottney/RuleSheetServer/blob/master/README.md) for details about versioning.  File promotions may be tested using the links provided above:  please note that only the 10 most recent entries on each cluster will be returned in each view.
 Any "ineligible" files will be validated and a message stating why the files are ineligble will be printed to the command line.
+
+
+**NOTE:**
+Please do not modify the "snapshot.pkl" file created after running this script; this is used for serialization.
