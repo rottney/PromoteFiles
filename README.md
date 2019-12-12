@@ -2,6 +2,11 @@
 CLI app to promote text files to a [remote server](https://github.com/rottney/RuleSheetServer)
 
 
+**UPDATE:**
+The server is currently turned off due to AWS free tier restrictions.  To turn back on, please contact the maintainer at rottney123@gmail.com.
+----------------------------------------------------------------
+
+
 **SUMMARY:**
 When run, this script monitors its parent directory for file changes.
 Eligible files are automatically "promoted" to one of three remote clusters at the user's discresion.
